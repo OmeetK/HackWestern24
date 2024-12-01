@@ -15,52 +15,6 @@ const dbName = "HackWestern11";
 let db;
 
 async function getNextSequenceValue(sequenceName) {
-  try {
-    const counter = await db.collection("counters").findOne({ _id: sequenceName });
-    
-    if (!counter) {
-      const initResult = await db.collection("counters").insertOne({
-        _id: sequenceName,
-        sequence_value: 1
-      });
-      return 1;
-    }
-    
-    const result = await db.collection("counters").findOneAndUpdate(
-      { _id: sequenceName },
-      { $inc: { sequence_value: 1 } },
-      { returnDocument: "after" }
-    );
-    
-    return result.sequence_value;
-  } catch (error) {
-    console.error("Error in getNextSequenceValue:", error);
-    throw error;
-  }
-}
-
-async function startServer() {
-  try {
-    await client.connect();
-    console.log("Connected to MongoDB");
-    db = client.db(dbName);
-
-    try {
-      await db.collection("counters").createIndex({ _id: 1 }, { unique: true });
-    } catch (error) {
-      console.log("Counters collection already initialized");
-    }
-
-    app.listen(port, () => {
-      console.log(`Server is running on http://localhost:${port}`);
-    });
-  } catch (error) {
-    console.error("Failed to connect to MongoDB:", error);
-    process.exit(1);
-  }
-}
-
-async function getNextSequenceValue(sequenceName) {
     try {
       const counter = await db.collection("counters").findOne({ _id: sequenceName });
       
